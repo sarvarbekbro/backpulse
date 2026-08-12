@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
 import { Exclude } from "class-transformer";
+import { Project } from "src/modules/projects/entities/project.entity";
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
@@ -7,6 +8,9 @@ export class User {
 
   @Column({unique: true})
   email: string;
+
+  @OneToMany(() => Project, (project) => project.owner)
+  projects: Project[];
 
   @Column()
   @Exclude()
