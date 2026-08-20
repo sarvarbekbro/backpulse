@@ -1,3 +1,5 @@
+import { ApiKey } from 'src/modules/api-keys/entities/api-keys.entity';
+import { RequestLog } from 'src/modules/logs/entities/request-log.entity';
 import { User } from 'src/modules/users/entities/user.entity';
 import {
   PrimaryGeneratedColumn,
@@ -6,6 +8,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -33,4 +36,10 @@ export class Project {
 
   @ManyToOne(() => User, (user) => user.projects, {onDelete: 'CASCADE'})
   owner: User;
+
+  @OneToMany(() => RequestLog, (log) => log.project)
+  logs: RequestLog[];
+
+  @OneToMany(() => ApiKey, (apiKey) => apiKey.project)
+  apiKeys: ApiKey[];
 }

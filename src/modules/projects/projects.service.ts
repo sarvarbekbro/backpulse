@@ -19,17 +19,26 @@ const project =  this.projectsRepository.create({
 return await this.projectsRepository.save(project)
   }
   async findAll(owner: User){
-    const projects = await this.projectsRepository.find({where: {owner}})
+    const projects = await this.projectsRepository.find({where: {owner: {id: owner.id}}})
     return projects
   }
 
- async findOne(id: number, owner: User){
-  const project = await this.projectsRepository.findOneBy({id, owner})
-  if(!project){
-    throw new NotFoundException('Project not found')
+ async findOne(id: number, owner: User) {
+  const project = await this.projectsRepository.findOne({
+    where: {
+      id,
+      owner: {
+        id: owner.id,
+      },
+    },
+  });
+
+  if (!project) {
+    throw new NotFoundException('Project not found');
   }
+
   return project;
- }
+}
 
   async update(id: number, dto: UpdateProjectDto, owner: User){
     const project = await this.projectsRepository.findOne({where: {id, owner}})

@@ -6,6 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ProjectsModule } from './modules/projects/projects.module';
+import { LogsModule } from './modules/logs/logs.module';
+import { ApiKeysModule } from './modules/api-keys/api-keys.module';
 
 @Module({
   imports: [
@@ -22,7 +24,7 @@ import { ProjectsModule } from './modules/projects/projects.module';
     autoLoadEntities: true,
     synchronize: true,
   }),
-}), UsersModule, AuthModule, ProjectsModule
+}), UsersModule, AuthModule, ProjectsModule, LogsModule, ApiKeysModule
   ],
   controllers: [AppController],
   providers: [AppService],

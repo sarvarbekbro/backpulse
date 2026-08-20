@@ -1,11 +1,13 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { User } from '../users/entities/user.entity';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt.auth.guard';
+import { RequestLoggingInterceptor } from '../logs/interceptors/request-logging/request-logging.interceptor';
 
+@UseInterceptors(RequestLoggingInterceptor)
 @UseGuards(JwtAuthGuard)
 @Controller('projects')
 export class ProjectsController {
