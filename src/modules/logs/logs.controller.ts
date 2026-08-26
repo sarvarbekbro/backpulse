@@ -1,21 +1,40 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
-import { UseInterceptors } from '@nestjs/common';
-import { RequestLoggingInterceptor } from './interceptors/request-logging/request-logging.interceptor';
+import {  Controller, Get, Param, ParseIntPipe, Post, UseGuards, UseInterceptors } from '@nestjs/common';
 import { LogsService } from './logs.service';
-import type { RequestLogData } from './interfaces/request-log-data.interface';
-import { Project } from '../projects/entities/project.entity';
+import { ProjectsService } from '../projects/projects.service';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { User } from '../users/entities/user.entity';
+import { JwtAuthGuard } from '../auth/guards/jwt.auth.guard';
+import { ApiKeyGuard } from '../api-keys/guards/api-key.guard';
+import { RequestLoggingInterceptor } from './interceptors/request-logging/request-logging.interceptor';
 
-@Controller('logs')
+@Controller('projects/:projectId/logs')
 export class LogsController {
-  constructor( private readonly logsService: LogsService){}
+  constructor( private readonly logsService: LogsService,
+    private readonly projectService: ProjectsService
+  ){}
 
   @Get()
-  findAll(project: Project){
-    
+  @UseGuards(JwtAuthGuard)
+ async  findAll(@Param('projectId', ParseIntPipe)projectId: number, @CurrentUser() user: User){
+  const project =  await this.projectService.findOne(projectId, user)
+
+  return this.logsService.findAll(project)
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe)id: number, project: Project ){
+  @UseGuards(JwtAuthGuard)
+  async findOne(@Param('projectId', ParseIntPipe) projectId: number,@Param('id', ParseIntPipe)id: number, @CurrentUser() user:  User  ){
+ const project = await this.projectService.findOne(projectId, user)
+ return this.logsService.findOne(id, project)
+}
 
+@UseGuards(ApiKeyGuard)
+@UseInterceptors(RequestLoggingInterceptor)
+  @Post('request')
+   capture(){
+    return {
+      message: 'Request logged successfully'
+    }
   }
+
 }

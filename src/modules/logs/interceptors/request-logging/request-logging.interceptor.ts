@@ -12,7 +12,7 @@ export class RequestLoggingInterceptor implements NestInterceptor {
     const response = context.switchToHttp().getResponse()
     const startTime = Date.now();
     return next.handle().pipe(
-      tap(() => {
+      tap( () => {
 
         const responseTime = Date.now() - startTime;
        const data: RequestLogData ={
@@ -24,7 +24,7 @@ export class RequestLoggingInterceptor implements NestInterceptor {
         ip: request.ip,
         userAgent: request.headers['user-agent']
        };
- return this.logsService.create(data)
+ void this.logsService.create(data)
       })
     );
   }

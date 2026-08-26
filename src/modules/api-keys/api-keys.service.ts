@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ApiKey } from 'src/modules/api-keys/entities/api-keys.entity';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ApiKey } from './entities/api-keys.entity';
 import { Repository } from 'typeorm';
 import { randomBytes } from 'crypto';
 import * as bcrypt from 'bcrypt';
@@ -81,4 +81,20 @@ export class ApiKeysService {
     apiKey.isActive = false;
     return this.apiKeysRepository.save(apiKey);
   }
+
+async validateApiKey (rawKey: string){
+  const apiKeys = await this.apiKeysRepository.find({relations: {
+    project: true,
+  }})
+
+  for (const apiKey of apiKeys){
+    const isMatch = await bcrypt.compare(rawKey, apiKey.keyHash)
+    if(isMatch){
+      return apiKey;
+    }
+
+  }
+  return null;
+
+}
 }
