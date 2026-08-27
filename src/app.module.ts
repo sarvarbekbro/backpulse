@@ -8,6 +8,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ProjectsModule } from './modules/projects/projects.module';
 import { LogsModule } from './modules/logs/logs.module';
 import { ApiKeysModule } from './modules/api-keys/api-keys.module';
+import { ErrorLogsModule } from './modules/error-logs/error-logs.module';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { ApiKeysModule } from './modules/api-keys/api-keys.module';
     autoLoadEntities: true,
     synchronize: true,
   }),
-}), UsersModule, AuthModule, ProjectsModule, LogsModule, ApiKeysModule
+}), UsersModule, AuthModule, ProjectsModule, LogsModule, ApiKeysModule, ErrorLogsModule
   ],
   controllers: [AppController],
   providers: [AppService],
